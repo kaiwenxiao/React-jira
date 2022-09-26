@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx --no-install commitlint --edit $1
+
+# https://stackoverflow.com/questions/67074097/what-is-the-correct-way-to-add-commitlint-to-the-commit-msg-hook-in-husky
