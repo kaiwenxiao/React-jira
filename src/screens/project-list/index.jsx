@@ -1,8 +1,9 @@
 import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import React, { useEffect, useState } from "react";
-import { cleanObject } from "utils";
+import { cleanObject, useDebounce } from "utils";
 import * as qs from "qs";
+import { useMount } from "./../../utils/index";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 export const ProjectListScreen = () => {
@@ -12,23 +13,26 @@ export const ProjectListScreen = () => {
     name: "",
     personId: "",
   });
+  const debounceParam = useDebounce(param, 2000);
 
   // 当param改变时，去调用接口
   useEffect(() => {
-    fetch(`${apiUrl}/projects?${qs.stringify(cleanObject(param))}`).then(async (response) => {
-      if (response.ok) {
-        setList(await response.json());
+    fetch(`${apiUrl}/projects?${qs.stringify(cleanObject(debounceParam))}`).then(
+      async (response) => {
+        if (response.ok) {
+          setList(await response.json());
+        }
       }
-    });
-  }, [param]);
+    );
+  }, [debounceParam]);
 
-  useEffect(() => {
+  useMount(() => {
     fetch(`${apiUrl}/users`).then(async (response) => {
       if (response.ok) {
         setUsers(await response.json());
       }
     });
-  }, [param]);
+  });
   return (
     <div>
       <SearchPanel users={users} param={param} setParam={setParam} />
