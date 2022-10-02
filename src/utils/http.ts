@@ -45,6 +45,28 @@ export const http = async (
 // 自动携带jwt的方法
 export const useHttp = () => {
   const { user } = useAuth();
+  // utitlity type
   return (...[endpoint, config]: Parameters<typeof http>) =>
     http(endpoint, { ...config, token: user?.token });
 };
+
+// 联合类型
+// let myFavoriteNumber: string | number;
+// myFavoriteNumber = "seven";
+// myFavoriteNumber = 7;
+
+// let jackFavoriteNumber: string | number;
+
+// // 类型别名
+// type FavoriteNumber = string | number;
+// let roseFavoriteNumber: FavoriteNumber = "6";
+
+// type和interface在很多时候可以互换
+// type可以做到联合类型和交叉类型，以及utility type
+type Person = {
+  name: string;
+  age: string;
+};
+
+const xiaoMing: Partial<Person> = { age: "8" };
+const shenMiRen: Omit<Person, "name" | "age"> = {};
