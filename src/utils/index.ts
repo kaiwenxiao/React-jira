@@ -1,7 +1,11 @@
-// 0在业务上是一个真值，而不是js的假值(一个！为求反，两个为求反后的boolean) !undefined === true -- !!0 === false
 import { useEffect } from "react";
 import { useState } from "react";
+
+// 0在业务上是一个真值，而不是js的假值(一个！为求反，两个为求反后的boolean) !undefined === true -- !!0 === false
 export const isFalsy = (value: unknown): boolean => (value === 0 ? false : !value);
+
+// value 为false时也是有意义的，而不是isFalsy
+export const isVoid = (value: unknown) => value === undefined || value === null || value === "";
 
 // 在一个函数中，改变传入的对象本身是不好的
 export const cleanObject = (object: { [key: string]: unknown }) => {
@@ -9,7 +13,7 @@ export const cleanObject = (object: { [key: string]: unknown }) => {
   const result = { ...object };
   Object.keys(result).forEach((key) => {
     const value = result[key];
-    if (isFalsy(value)) {
+    if (isVoid(value)) {
       delete result[key];
     }
   });

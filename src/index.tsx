@@ -4,15 +4,16 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 // jira-dev-tool也用到antd，后面需要覆盖antd的样式，所以先把less文件放在下面
-import { loadDevTools } from "jira-dev-tool";
+import { DevTools, loadServer } from "jira-dev-tool";
 import "antd/dist/antd.less";
 import { AppProviders } from "context";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-loadDevTools(() => {
+loadServer(() => {
   root.render(
     // <React.StrictMode>
     <AppProviders>
+      <DevTools />
       <App />
     </AppProviders>
     // </React.StrictMode>
