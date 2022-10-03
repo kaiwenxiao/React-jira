@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import "antd/";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+// jira-dev-tool也用到antd，后面需要覆盖antd的样式，所以先把less文件放在下面
 import { loadDevTools } from "jira-dev-tool";
+import "antd/dist/antd.less";
 import { AppProviders } from "context";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
