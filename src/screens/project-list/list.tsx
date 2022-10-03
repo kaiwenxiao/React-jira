@@ -2,6 +2,7 @@ import React from "react";
 import { User } from "./search-panel";
 import { Table } from "antd";
 import dayjs from "dayjs";
+import { TableProps } from "antd/es/table";
 
 interface Project {
   id: string;
@@ -12,12 +13,13 @@ interface Project {
   created: number;
 }
 
-interface ListProps {
-  list: Project[];
+interface ListProps extends TableProps<Project> {
+  // list: Project[]; -- 不需要定义list，这里的list对应TableProps源码中的dataSource
   users: User[];
 }
 
-export const List = ({ list, users }: ListProps) => {
+type PropsType = Omit<ListProps, "users">; // antd Table 的props 类型
+export const List = ({ users, ...props }: ListProps) => {
   return (
     <Table
       pagination={false}
@@ -46,7 +48,7 @@ export const List = ({ list, users }: ListProps) => {
           },
         },
       ]}
-      dataSource={list}
+      {...props}
     />
   );
   // return (

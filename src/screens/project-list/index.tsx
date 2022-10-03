@@ -6,10 +6,14 @@ import * as qs from "qs";
 import { useMount } from "./../../utils/index";
 import { useHttp } from "utils/http";
 import styled from "@emotion/styled";
+import { Typography } from "antd";
 
 export const ProjectListScreen = () => {
   const [users, setUsers] = useState([]);
   const [list, setList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<null | Error>(null);
+
   const [param, setParam] = useState({
     name: "",
     personId: "",
@@ -20,7 +24,14 @@ export const ProjectListScreen = () => {
   // 当param改变时，去调用接口
 
   useEffect(() => {
-    client("projects", { data: cleanObject(debounceParam) }).then(setList);
+    setIsLoading(true);
+    client("projects", { data: cleanObject(debounceParam) })
+      .then(setList)
+      .catch((error) => {
+        setList([]);
+        setError(error);
+      })
+      .finally(() => setIsLoading(false));
   }, [debounceParam]);
 
   useMount(() => {
@@ -30,7 +41,8 @@ export const ProjectListScreen = () => {
     <Container>
       <h1>项目列表</h1>
       <SearchPanel users={users} param={param} setParam={setParam} />
-      <List users={users} list={list} />
+      {error ? <Typography.Text type={"danger"}>{error.message}</Typography.Text> : null}
+      <List loading={isLoading} users={users} dataSource={list} />
     </Container>
   );
 };
