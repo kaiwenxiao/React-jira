@@ -12,7 +12,12 @@ const defaultInitialState: State<null> = {
   error: null,
 };
 
-export const useAsync = <D>(initialState?: State<D>) => {
+const defaultConfig = {
+  throwOnError: false,
+};
+
+export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defaultConfig) => {
+  const config = { ...defaultConfig, initialConfig };
   const [state, setState] = useState<State<D>>({
     ...defaultInitialState,
     ...initialState,
@@ -34,17 +39,22 @@ export const useAsync = <D>(initialState?: State<D>) => {
 
   // run 用来触发异步请求
   const run = (promise: Promise<D>) => {
+    console.log("promise", promise);
     if (!promise || !promise.then) {
       throw new Error("请传入promise类型数据");
     }
     setState({ ...state, stat: "loading" });
     return promise
       .then((data) => {
+        console.log("ff");
         setData(data);
         return data;
       })
       .catch((error) => {
         setError(error);
+        // catch 会消化异常，如果不主动抛出，外面是接受不到的
+        // return error;
+        if (config.throwOnError) return Promise.reject(error);
         return error;
       });
   };

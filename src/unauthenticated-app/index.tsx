@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { LoginScreen } from "./login";
 import { RegisterScreen } from "./register";
-import { Card, Divider, Button } from "antd";
+import { Card, Divider, Button, Typography } from "antd";
 import styled from "@emotion/styled";
 import logo from "assets/logo.svg";
 import left from "assets/left.svg";
@@ -9,13 +9,16 @@ import right from "assets/right.svg";
 
 export const UnauthenticatedApp = () => {
   const [isRegister, setIsRegister] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
   return (
     <Container>
       <Header />
       <Background />
       <ShadowCard>
         <Ttitle>{isRegister ? "请注册" : "请登录"}</Ttitle>
-        {isRegister ? <RegisterScreen /> : <LoginScreen />}
+        {error ? <Typography.Text type={"danger"}>{error.message}</Typography.Text> : null}
+        {isRegister ? <RegisterScreen onError={setError} /> : <LoginScreen onError={setError} />}
         <Divider />
         <Button type={"link"} onClick={() => setIsRegister(!isRegister)}>
           {isRegister ? "已经有账号了？请登录" : "没有账号？注册"}
@@ -36,7 +39,7 @@ const ShadowCard = styled(Card)`
   min-height: 56rem;
   width: 40rem;
   padding: 3.2rem 4rem;
-  border-radius: border-box;
+  border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 10px;
   text-align: center;
 `;
