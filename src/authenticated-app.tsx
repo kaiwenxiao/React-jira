@@ -9,6 +9,7 @@ import { Row } from "components/lib";
 import { Button, Dropdown, Menu } from "antd";
 import { Navigate, BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ProjectScreen } from "./screens/project";
+import { resetRoute } from "./utils";
 
 export const AuthenticatedApp = () => {
   return (
@@ -20,6 +21,7 @@ export const AuthenticatedApp = () => {
           <Routes>
             <Route path={"/projects"} element={<ProjectListScreen />} />
             <Route path={"/projects/:projectId/*"} element={<ProjectScreen />} />
+            <Route index element={<Navigate to={"/projects"} />} />
           </Routes>
         </Router>
       </Main>
@@ -34,7 +36,9 @@ const PageHeader = () => {
     <Header between={true}>
       <HeaderLeft gap={true}>
         {/*<img src={softwareLogo} />*/}
-        <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
+        <Button type={"link"} onClick={resetRoute}>
+          <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
+        </Button>
         <h3>项目</h3>
         <h3>用户</h3>
       </HeaderLeft>
