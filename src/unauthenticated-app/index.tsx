@@ -6,22 +6,17 @@ import styled from "@emotion/styled";
 import logo from "assets/logo.svg";
 import left from "assets/left.svg";
 import right from "assets/right.svg";
+import { useDocumentTitle } from "../utils";
 
 export const UnauthenticatedApp = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  // useDocumentTitle("请登录以继续");
 
   return (
     <Container>
       <Header />
       <Background />
-      <button
-        onClick={() => {
-          throw new Error("点击抛出异常");
-        }}
-      >
-        抛出异常
-      </button>
       <ShadowCard>
         <Ttitle>{isRegister ? "请注册" : "请登录"}</Ttitle>
         {error ? <Typography.Text type={"danger"}>{error.message}</Typography.Text> : null}

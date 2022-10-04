@@ -36,6 +36,7 @@ const FullPage = styled.div`
 
 export const FullPageErrorFallback = ({ error }: { error: Error | null }) => (
   <FullPage>
-    <DevTools />;<Typography.Text type={"danger"}>{error?.message}</Typography.Text>
+    <DevTools />
+    <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
   </FullPage>
 );

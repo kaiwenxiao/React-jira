@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 
 // 0在业务上是一个真值，而不是js的假值(一个！为求反，两个为求反后的boolean) !undefined === true -- !!0 === false
@@ -37,4 +37,26 @@ export const useDebounce = <T>(value: T, delay?: number) => {
   }, [value, delay]);
 
   return debounceValue;
+};
+
+export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
+  // 3. a.tsx -> b.tsx 切换页面的过程中，保留a页面的文档名称（第二个useEffect加空依赖的话，这里可以不用useRef -- 好好理解下
+  // useEffect return 里面读的值比如oldTitle都是外面的初始值，
+  // 比如你先引用了oldTitle，但是不管你后面调用多少次useDocumentTitle，还是第一次读的值，js闭包问题）
+  const oldTitle = useRef(document.title).current;
+  // 1. a.tsx -> b.tsx （两个页面都使用了useDocumentTitle，
+  // 且有不同的标题名称，这个useEffect就做到切换文档标题名称的作用）
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
+  // 2. a.tsx -> b.tsx 切换页面的过程中，如果新的页面keepOnUmount变化，比如从true -> false，
+  // 那么就是要b页面保留a页面的标题，卸载a页面的时候执行这个useEffect。正常来说这里的oldTitle依赖是不会变化的（理解对吗？）
+  useEffect(() => {
+    return () => {
+      if (!keepOnUnmount) {
+        document.title = oldTitle;
+      }
+    };
+  }, [keepOnUnmount, oldTitle]);
 };

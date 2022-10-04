@@ -2,7 +2,7 @@
 import { List, Project } from "./list";
 import { SearchPanel } from "./search-panel";
 import React, { useEffect, useState } from "react";
-import { cleanObject, useDebounce } from "utils";
+import { cleanObject, useDebounce, useDocumentTitle } from "utils";
 import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "../../utils/project";
@@ -17,7 +17,7 @@ export const ProjectListScreen = () => {
   // useAsync泛型指的是接口返回的数据类型
   const { isLoading, error, data: list } = useProjects(debounceParam);
   const { data: users } = useUsers();
-
+  useDocumentTitle("项目列表", false);
   return (
     <Container>
       <h1>项目列表</h1>
