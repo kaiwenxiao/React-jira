@@ -7,17 +7,24 @@ import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "../../utils/project";
 import { useUsers } from "../../utils/user";
+import { useUrlQueryParam } from "../../utils/url";
 
 export const ProjectListScreen = () => {
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
+  // const [, setParam] = useState({
+  //   name: "",
+  //   personId: "",
+  // });
+  // 通过URL的query来管理输入框的值
+  const [keys] = useState<["name", "personId"]>(["name", "personId"]);
+  // const [keys] = useState<('name' | 'personId')[]>(["name", "personId"]); 一样的
+  const [param, setParam] = useUrlQueryParam(keys);
+  // setParam({ name: "123" });
   const debounceParam = useDebounce(param, 2000);
   // useAsync泛型指的是接口返回的数据类型
   const { isLoading, error, data: list } = useProjects(debounceParam);
   const { data: users } = useUsers();
   useDocumentTitle("项目列表", false);
+
   return (
     <Container>
       <h1>项目列表</h1>
@@ -27,6 +34,8 @@ export const ProjectListScreen = () => {
     </Container>
   );
 };
+
+ProjectListScreen.whyDidYouRender = false;
 
 const Container = styled.div`
   padding: 3.2rem;
