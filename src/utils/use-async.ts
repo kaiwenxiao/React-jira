@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMountedRef } from "./index";
 
 interface State<D> {
   error: Error | null;
@@ -22,6 +23,8 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
     ...defaultInitialState,
     ...initialState,
   });
+
+  const mountedRef = useMountedRef();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [retry, setRetry] = useState(() => () => {});
@@ -51,7 +54,8 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
     setState({ ...state, stat: "loading" });
     return promise
       .then((data) => {
-        setData(data);
+        //防止页面还在请求过程中，切换页面，页面卸载后，promise.then结果无处接收的问题
+        if (mountedRef.current) setData(data);
         return data;
       })
       .catch((error) => {
