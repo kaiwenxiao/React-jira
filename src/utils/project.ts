@@ -9,10 +9,40 @@ export const useProjects = (param?: Partial<Project>) => {
   // useAsync泛型指的是接口返回的数据类型
   const { run, ...result } = useAsync<Project[]>();
 
+  const fetchProjects = () => client("projects", { data: cleanObject(param || {}) });
+
   // 当param改变时，去调用接口
   useEffect(() => {
-    run(client("projects", { data: cleanObject(param || {}) }));
+    run(fetchProjects(), { retry: fetchProjects });
   }, [param]);
 
   return result;
+};
+
+export const useEditProject = () => {
+  const { run, ...asyncResult } = useAsync();
+  const client = useHttp();
+  const mutate = (params: Partial<Project>) => {
+    return run(
+      client(`projects/${params.id}`, {
+        data: params,
+        method: "PATCH",
+      })
+    );
+  };
+  return { mutate, ...asyncResult };
+};
+
+export const useAddProject = () => {
+  const { run, ...asyncResult } = useAsync();
+  const client = useHttp();
+  const mutate = (params: Partial<Project>) => {
+    return run(
+      client(`projects/${params.id}`, {
+        data: params,
+        method: "POST",
+      })
+    );
+  };
+  return { mutate, ...asyncResult };
 };

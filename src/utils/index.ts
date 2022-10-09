@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 
-// 0在业务上是一个真值，而不是js的假值(一个！为求反，两个为求反后的boolean) !undefined === true -- !!0 === false
+// 0在业务上是一个真值，而不是js的假值(一个！为求反，两个为求boolean 0的boolean为false) !undefined === true -- !!0 === false
 export const isFalsy = (value: unknown): boolean => (value === 0 ? false : !value);
 
 // value 为false时也是有意义的，而不是isFalsy

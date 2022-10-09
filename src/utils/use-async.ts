@@ -23,6 +23,9 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
     ...initialState,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const [retry, setRetry] = useState(() => () => {});
+
   const setData = (data: D) =>
     setState({
       data,
@@ -38,21 +41,22 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
     });
 
   // run 用来触发异步请求
-  const run = (promise: Promise<D>) => {
-    console.log("promise", promise);
+  const run = (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
     if (!promise || !promise.then) {
       throw new Error("请传入promise类型数据");
     }
+    setRetry(() => () => {
+      if (runConfig?.retry) run(runConfig?.retry(), runConfig);
+    });
     setState({ ...state, stat: "loading" });
     return promise
       .then((data) => {
-        console.log("ff");
         setData(data);
         return data;
       })
       .catch((error) => {
         setError(error);
-        // catch 会消化异常，如果不主动抛出，外面是接受不到的
+        // catch 会消化异常，如果不主动出，外面是接抛受不到的
         // return error;
         if (config.throwOnError) return Promise.reject(error);
         return error;
@@ -67,6 +71,8 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
     run,
     setData,
     setError,
+    // retry 被调用时重新跑一遍run，让state刷新一遍
+    retry,
     ...state,
   };
 };
