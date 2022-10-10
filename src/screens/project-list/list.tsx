@@ -1,11 +1,12 @@
 import React from "react";
 import { User } from "./search-panel";
-import { Table } from "antd";
+import { Dropdown, Menu, Table } from "antd";
 import dayjs from "dayjs";
 import { TableProps } from "antd/es/table";
 import { Link } from "react-router-dom";
 import { Pin } from "../../components/pin";
 import { useEditProject } from "../../utils/project";
+import { ButtonNoPadding } from "../../components/lib";
 
 export interface Project {
   id: number;
@@ -20,6 +21,7 @@ interface ListProps extends TableProps<Project> {
   // list: Project[]; -- 不需要定义list，这里的list对应TableProps源码中的dataSource
   users: User[];
   refresh?: () => void;
+  setProjectModalOpen: (isOpen: boolean) => void;
 }
 
 type PropsType = Omit<ListProps, "users">; // antd Table 的props 类型
@@ -75,6 +77,28 @@ export const List = ({ users, ...props }: ListProps) => {
           render(value, project) {
             return (
               <span>{project.created ? dayjs(project.created).format("YYYY-MM-DD") : "无"}</span>
+            );
+          },
+        },
+        {
+          render(value, project) {
+            return (
+              <Dropdown
+                overlay={
+                  <Menu>
+                    <Menu.Item key={"edit"}>
+                      <ButtonNoPadding
+                        type={"link"}
+                        onClick={() => props.setProjectModalOpen(true)}
+                      >
+                        编辑
+                      </ButtonNoPadding>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <ButtonNoPadding type={"link"}>...</ButtonNoPadding>
+              </Dropdown>
             );
           },
         },
