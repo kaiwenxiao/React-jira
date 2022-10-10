@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useMountedRef } from "./index";
 
 interface State<D> {
@@ -29,43 +29,53 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [retry, setRetry] = useState(() => () => {});
 
-  const setData = (data: D) =>
-    setState({
-      data,
-      stat: "success",
-      error: null,
-    });
+  const setData = useCallback(
+    (data: D) =>
+      setState({
+        data,
+        stat: "success",
+        error: null,
+      }),
+    []
+  );
 
-  const setError = (error: Error) =>
-    setState({
-      error,
-      stat: "error",
-      data: null,
-    });
+  const setError = useCallback(
+    (error: Error) =>
+      setState({
+        error,
+        stat: "error",
+        data: null,
+      }),
+    []
+  );
 
   // run 用来触发异步请求
-  const run = (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
-    if (!promise || !promise.then) {
-      throw new Error("请传入promise类型数据");
-    }
-    setRetry(() => () => {
-      if (runConfig?.retry) run(runConfig?.retry(), runConfig);
-    });
-    setState({ ...state, stat: "loading" });
-    return promise
-      .then((data) => {
-        //防止页面还在请求过程中，切换页面，页面卸载后，promise.then结果无处接收的问题
-        if (mountedRef.current) setData(data);
-        return data;
-      })
-      .catch((error) => {
-        setError(error);
-        // catch 会消化异常，如果不主动出，外面是接抛受不到的
-        // return error;
-        if (config.throwOnError) return Promise.reject(error);
-        return error;
+  const run = useCallback(
+    (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
+      if (!promise || !promise.then) {
+        throw new Error("请传入promise类型数据");
+      }
+      setRetry(() => () => {
+        if (runConfig?.retry) run(runConfig?.retry(), runConfig);
       });
-  };
+      // useCallback直接依赖state会发生无限循环，使用setState函数式写法 10.1
+      setState((prevState) => ({ ...prevState, stat: "loading" }));
+      return promise
+        .then((data) => {
+          //防止页面还在请求过程中，切换页面，页面卸载后，promise.then结果无处接收的问题
+          if (mountedRef.current) setData(data);
+          return data;
+        })
+        .catch((error) => {
+          setError(error);
+          // catch 会消化异常，如果不主动出，外面是接抛受不到的
+          // return error;
+          if (config.throwOnError) return Promise.reject(error);
+          return error;
+        });
+    },
+    [config.throwOnError, mountedRef, setData, setError]
+  );
 
   return {
     isIdle: state.stat === "idle",

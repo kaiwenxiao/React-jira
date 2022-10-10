@@ -12,7 +12,6 @@ export const useUsers = (param?: Partial<User>) => {
 
   // 当param改变时，去调用接口
   useEffect(() => {
-    console.log("asd");
     run(client("users", { data: cleanObject(param || {}) }));
   }, [param]);
 
