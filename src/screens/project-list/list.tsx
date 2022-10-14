@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Pin } from "../../components/pin";
 import { useEditProject } from "../../utils/project";
 import { ButtonNoPadding } from "../../components/lib";
+import { useProjectModal } from "./util";
 
 export interface Project {
   id: number;
@@ -21,12 +22,12 @@ interface ListProps extends TableProps<Project> {
   // list: Project[]; -- 不需要定义list，这里的list对应TableProps源码中的dataSource
   users: User[];
   refresh?: () => void;
-  setProjectModalOpen: (isOpen: boolean) => void;
 }
 
 type PropsType = Omit<ListProps, "users">; // antd Table 的props 类型
 export const List = ({ users, ...props }: ListProps) => {
   const { mutate } = useEditProject();
+  const { open } = useProjectModal();
   // 2.
   // const pinProject = (id: number, pin: boolean) => mutate({ id, pin });
 
@@ -86,13 +87,8 @@ export const List = ({ users, ...props }: ListProps) => {
               <Dropdown
                 overlay={
                   <Menu>
-                    <Menu.Item key={"edit"}>
-                      <ButtonNoPadding
-                        type={"link"}
-                        onClick={() => props.setProjectModalOpen(true)}
-                      >
-                        编辑
-                      </ButtonNoPadding>
+                    <Menu.Item key={"edit"} onClick={open}>
+                      创建项目
                     </Menu.Item>
                   </Menu>
                 }

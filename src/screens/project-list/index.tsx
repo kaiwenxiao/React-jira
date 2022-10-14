@@ -8,27 +8,27 @@ import { Button, Typography } from "antd";
 import { useProjects } from "../../utils/project";
 import { useUsers } from "../../utils/user";
 import { useUrlQueryParam } from "../../utils/url";
-import { useProjectSearchParams } from "./util";
+import { useProjectModal, useProjectSearchParams } from "./util";
 import { Row } from "../../components/lib";
 
-export const ProjectListScreen = (props: { setProjectModalOpen: (isOpen: boolean) => void }) => {
+export const ProjectListScreen = () => {
   const [param, setParam] = useProjectSearchParams();
   const debounceParam = useDebounce(param, 2000);
   const { isLoading, error, data: list, retry } = useProjects(debounceParam);
   const { data: users } = useUsers();
+  const { open } = useProjectModal();
   useDocumentTitle("项目列表", false);
 
   return (
     <Container>
       <Row between={true}>
         <h1>项目列表</h1>
-        <Button onClick={() => props.setProjectModalOpen(true)}>创建项目</Button>
+        <Button onClick={open}>创建项目</Button>
       </Row>
       {/*<button onClick={retry}> retry</button>*/}
       <SearchPanel users={users || []} param={param} setParam={setParam} />
       {error ? <Typography.Text type={"danger"}>{error.message}</Typography.Text> : null}
       <List
-        setProjectModalOpen={props.setProjectModalOpen}
         refresh={retry}
         loading={isLoading}
         users={users || []}
