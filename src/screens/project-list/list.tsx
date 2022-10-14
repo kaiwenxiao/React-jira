@@ -21,7 +21,6 @@ export interface Project {
 interface ListProps extends TableProps<Project> {
   // list: Project[]; -- 不需要定义list，这里的list对应TableProps源码中的dataSource
   users: User[];
-  refresh?: () => void;
 }
 
 type PropsType = Omit<ListProps, "users">; // antd Table 的props 类型
@@ -32,7 +31,7 @@ export const List = ({ users, ...props }: ListProps) => {
   // const pinProject = (id: number, pin: boolean) => mutate({ id, pin });
 
   // 3.
-  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin }).then(props.refresh);
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
   return (
     <Table
       pagination={false}

@@ -9,12 +9,12 @@ import { useProjects } from "../../utils/project";
 import { useUsers } from "../../utils/user";
 import { useUrlQueryParam } from "../../utils/url";
 import { useProjectModal, useProjectSearchParams } from "./util";
-import { Row } from "../../components/lib";
+import { ErrorBox, Row } from "../../components/lib";
 
 export const ProjectListScreen = () => {
   const [param, setParam] = useProjectSearchParams();
   const debounceParam = useDebounce(param, 2000);
-  const { isLoading, error, data: list, retry } = useProjects(debounceParam);
+  const { isLoading, error, data: list } = useProjects(debounceParam);
   const { data: users } = useUsers();
   const { open } = useProjectModal();
   useDocumentTitle("项目列表", false);
@@ -27,13 +27,9 @@ export const ProjectListScreen = () => {
       </Row>
       {/*<button onClick={retry}> retry</button>*/}
       <SearchPanel users={users || []} param={param} setParam={setParam} />
-      {error ? <Typography.Text type={"danger"}>{error.message}</Typography.Text> : null}
-      <List
-        refresh={retry}
-        loading={isLoading}
-        users={users || []}
-        dataSource={list || undefined}
-      />
+      <ErrorBox error={error} />
+      {/*{error ? <Typography.Text type={"danger"}>{error.message}</Typography.Text> : null}*/}
+      <List loading={isLoading} users={users || []} dataSource={list || undefined} />
     </Container>
   );
 };
