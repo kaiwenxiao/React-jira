@@ -68,11 +68,17 @@ export const useAddProject = () => {
   // return { mutate, ...asyncResult };
   return useMutation(
     (params: Partial<Project>) =>
-      client(`project`, {
+      client(`projects`, {
         data: params,
       }),
     {
       onSuccess: () => queryClient.invalidateQueries("projects"),
     }
   );
+};
+
+export const useProject = (id?: number) => {
+  const client = useHttp();
+  // 当id不为undefined的时候才调用该函数
+  return useQuery<Project>(["project", { id }], () => client(`projects/${id}`), { enabled: !!id });
 };
