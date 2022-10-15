@@ -5,6 +5,7 @@ import { cleanObject } from "./index";
 import { useHttp } from "./http";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Params } from "react-router-dom";
+import { useProjectSearchParams } from "../screens/project-list/util";
 
 export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
@@ -30,6 +31,9 @@ export const useProjects = (param?: Partial<Project>) => {
 export const useEditProject = () => {
   const client = useHttp();
   const queryClient = useQueryClient();
+  const [searchParams] = useProjectSearchParams();
+  const queryKey = ["projects", searchParams];
+
   // const { run, ...asyncResult } = useAsync();
   // const mutate = (params: Partial<Project>) => {
   //   return run(
@@ -48,7 +52,23 @@ export const useEditProject = () => {
       }),
     //  前面执行成功后执行projects(为useQuery的queryKey)
     {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
+      onSuccess: () => queryClient.invalidateQueries(queryKey),
+      async onMutate(target) {
+        const previousItems = queryClient.getQueryData(queryKey);
+        // old 代表projects这个querykey的数组
+        queryClient.setQueryData(
+          queryKey,
+          (old?: Project[]) =>
+            old?.map((project) =>
+              project.id === target.id ? { ...project, ...target } : project
+            ) || []
+        );
+        // 返回是回滚机制
+        return { previousItems };
+      },
+      onError(error, newItem, context) {
+        queryClient.setQueryData(queryKey, (context as { previousItems: Project[] }).previousItems);
+      },
     }
   );
 };
@@ -56,6 +76,7 @@ export const useEditProject = () => {
 export const useAddProject = () => {
   const client = useHttp();
   const queryClient = useQueryClient();
+
   // const { run, ...asyncResult } = useAsync();
   // const mutate = (params: Partial<Project>) => {
   //   return run(
