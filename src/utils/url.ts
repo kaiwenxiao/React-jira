@@ -8,6 +8,7 @@ import { URLSearchParamsInit } from "react-router-dom/dist/dom";
 
 export const useUrlQueryParam = <K extends string>(keys: K[]) => {
   const [searchParams, setSearchParam] = useSearchParams();
+  const setSearchParams = useSetUrlSearchParam();
   return [
     useMemo(
       () =>
@@ -18,13 +19,26 @@ export const useUrlQueryParam = <K extends string>(keys: K[]) => {
       [searchParams, keys]
     ),
     (params: Partial<{ [key in K]: unknown }>) => {
-      const o = cleanObject({
-        ...Object.fromEntries(searchParams),
-        ...params,
-      }) as URLSearchParamsInit;
-      return setSearchParam(o);
+      //   const o = cleanObject({
+      //     ...Object.fromEntries(searchParams),
+      //     ...params,
+      //   }) as URLSearchParamsInit;
+      //   return setSearchParam(o);
+      // },
+      return setSearchParams(params);
     },
   ] as const;
+};
+
+export const useSetUrlSearchParam = () => {
+  const [searchParams, setSearchParam] = useSearchParams();
+  return (params: Partial<{ [key in string]: unknown }>) => {
+    const o = cleanObject({
+      ...Object.fromEntries(searchParams),
+      ...params,
+    }) as URLSearchParamsInit;
+    return setSearchParam(o);
+  };
 };
 
 const a = ["jack", 12, { gender: "male" }];

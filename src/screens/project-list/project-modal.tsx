@@ -19,6 +19,10 @@ export const ProjectModal = () => {
       close();
     });
   };
+  const closeModal = () => {
+    form.resetFields();
+    close();
+  };
 
   const title = editingProject ? "编辑项目" : "创建项目";
 
@@ -29,7 +33,7 @@ export const ProjectModal = () => {
 
   return (
     //  forceRender 避免Drawer dom还没加载完成（Drawer可能为false不展示），使用useForm，绑定不到表单报错
-    <Drawer forceRender={true} onClose={close} visible={projectModalOpen} width={"100%"}>
+    <Drawer forceRender={true} onClose={closeModal} visible={projectModalOpen} width={"100%"}>
       <Container>
         {isLoading ? (
           <Spin size={"large"} />

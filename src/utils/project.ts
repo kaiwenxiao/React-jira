@@ -102,6 +102,7 @@ export const useAddProject = (queryKey: QueryKey) => {
     (params: Partial<Project>) =>
       client(`projects`, {
         data: params,
+        method: "POST",
       }),
     useAddConfig(queryKey)
   );
