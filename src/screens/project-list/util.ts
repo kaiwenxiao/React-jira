@@ -13,6 +13,11 @@ export const useProjectSearchParams = () => {
   ] as const;
 };
 
+export const useProjectQueryKey = () => {
+  const [params] = useProjectSearchParams();
+  return ["project", params];
+};
+
 // 可以取代context和redux
 export const useProjectModal = () => {
   const [{ projectCreate }, setProjectCreate] = useUrlQueryParam(["projectCreate"]);
