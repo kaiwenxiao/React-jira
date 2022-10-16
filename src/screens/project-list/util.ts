@@ -39,7 +39,7 @@ export const useProjectModal = () => {
   // return [projectCreate === "true", open, close] as const;
   // 3个以上返回可以用对象
   return {
-    projectModalOpen: projectCreate === "true" || Boolean(editingProject),
+    projectModalOpen: projectCreate === "true" || Boolean(editingProjectId),
     open,
     close,
     startEdit,
