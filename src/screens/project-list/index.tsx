@@ -1,5 +1,5 @@
 // 异步请求状态、loading、错误管理
-import { List, Project } from "./list";
+import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import React, { useEffect, useState } from "react";
 import { cleanObject, useDebounce, useDocumentTitle } from "utils";
@@ -10,6 +10,7 @@ import { useUsers } from "../../utils/user";
 import { useUrlQueryParam } from "../../utils/url";
 import { useProjectModal, useProjectSearchParams } from "./util";
 import { ErrorBox, Row } from "../../components/lib";
+import { Project } from "../../types/project";
 
 export const ProjectListScreen = () => {
   const [param, setParam] = useProjectSearchParams();

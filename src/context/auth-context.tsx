@@ -1,6 +1,5 @@
 import React, { ReactNode, useState } from "react";
 import * as auth from "auth-provider";
-import { User } from "screens/project-list/search-panel";
 import { login, logout } from "./../auth-provider";
 import { http } from "utils/http";
 import { useMount } from "utils";
@@ -8,6 +7,7 @@ import { useAsync } from "../utils/use-async";
 import { FullPageErrorFallback, FullPageLoading } from "../components/lib";
 import { DevTools } from "jira-dev-tool";
 import { useQueryClient } from "react-query";
+import { User } from "../types/user";
 
 interface AuthForm {
   username: string;

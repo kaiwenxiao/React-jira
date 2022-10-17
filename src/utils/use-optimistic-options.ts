@@ -1,5 +1,5 @@
 import { QueryKey, useQueryClient } from "react-query";
-import { Project } from "../screens/project-list/list";
+import { Project } from "../types/project";
 
 export const useConfig = (queryKey: QueryKey, callback: (target: any, old?: any[]) => any[]) => {
   const queryClient = useQueryClient();
