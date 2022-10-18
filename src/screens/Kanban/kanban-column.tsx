@@ -7,6 +7,7 @@ import taskIcon from "assets/task.svg";
 import bugIcon from "assets/bug.svg";
 import styled from "@emotion/styled";
 import { Card } from "antd";
+import { CreateTask } from "./create-task";
 
 // useTasksTypes 接口返回类似 [{id: 1, name: bug},{id: 2, name: task}] -- 这里是要获取task的真实类型bug or task
 const TaskTypeIcon = ({ id }: { id: number }) => {
@@ -29,12 +30,13 @@ export const KanbanColumn = ({ kanban }: { kanban: Kanban }) => {
             <TaskTypeIcon id={task.typeId} />
           </Card>
         ))}
+        <CreateTask kanbanId={kanban.id} />
       </TasksContaienr>
     </Container>
   );
 };
 
-const Container = styled.div`
+export const Container = styled.div`
   min-width: 27rem;
   border-radius: 6px;
   background-color: rgb(244, 245, 247);
