@@ -3,6 +3,7 @@ import { QueryKey, useMutation, useQuery } from "react-query";
 import { Task } from "../types/task";
 import { Kanban } from "../types/kanban";
 import { useAddConfig } from "./use-optimistic-options";
+import { Project } from "../types/project";
 
 export const useTasks = (param?: Partial<Task>) => {
   const client = useHttp();
@@ -19,4 +20,9 @@ export const useAddTask = (queryKey: QueryKey) => {
       }),
     useAddConfig(queryKey)
   );
+};
+
+export const useTask = (id?: number) => {
+  const client = useHttp();
+  return useQuery<Project>(["task", { id }], () => client(`tasks/${id}`), { enabled: Boolean(id) });
 };
