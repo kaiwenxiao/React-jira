@@ -2,7 +2,7 @@ import { useHttp } from "./http";
 import { QueryKey, useMutation, useQuery } from "react-query";
 import { Task } from "../types/task";
 import { Kanban } from "../types/kanban";
-import { useAddConfig } from "./use-optimistic-options";
+import { useAddConfig, useDeleteConfig } from "./use-optimistic-options";
 import { Project } from "../types/project";
 
 export const useTasks = (param?: Partial<Task>) => {
@@ -25,4 +25,15 @@ export const useAddTask = (queryKey: QueryKey) => {
 export const useTask = (id?: number) => {
   const client = useHttp();
   return useQuery<Project>(["task", { id }], () => client(`tasks/${id}`), { enabled: Boolean(id) });
+};
+
+export const useDeleteTask = (queryKey: QueryKey) => {
+  const client = useHttp();
+  return useMutation(
+    ({ id }: { id: number }) =>
+      client(`tasks/${id}`, {
+        method: "DELETE",
+      }),
+    useDeleteConfig(queryKey)
+  );
 };
